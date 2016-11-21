@@ -38,6 +38,7 @@ import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.user.UserStorageService;
 
 import java.io.File;
 import java.io.IOException;
@@ -348,6 +349,10 @@ public class VotifierPlugin implements VoteHandler, com.vexsoftware.votifier.Vot
                 logger.info("Got a protocol v2 vote record -> " + vote);
             }
         }
+
+        Optional<UserStorageService> uss = Sponge.getServiceManager().provide(UserStorageService.class);
+        if (!uss.get().get(vote.getUsername()).isPresent()) return;
+
         Sponge.getScheduler().createTaskBuilder()
                 .execute(new Runnable() {
                     @Override
